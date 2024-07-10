@@ -37,3 +37,28 @@ PARTITION BY RANGE (sale_date) (
   PARTITION p2024 VALUES LESS THAN (TO_DATE('01-JAN-2025','DD-MON-YYYY'))
 );
 ```
+
+### Can you range partition to only last 30 days interval based on date column, without hardcoding in create table statement ?
+
+Yes, you can implement range partitioning for a rolling 30-day interval without hardcoding each partition in the CREATE TABLE statement by using interval partitioning. Interval partitioning automatically creates partitions as data is inserted, based on a specified interval.
+
+Here’s an example of how to set up a table with interval partitioning for a rolling 30-day interval based on a date column:
+
+```bash
+CREATE TABLE sales (
+  sale_id    NUMBER,
+  sale_date  DATE,
+  amount     NUMBER
+)
+PARTITION BY RANGE (sale_date)
+INTERVAL (NUMTODSINTERVAL(30, 'DAY'))
+(
+  PARTITION p_initial VALUES LESS THAN (TO_DATE('01-JAN-2024','DD-MON-YYYY'))
+);
+
+```
+**Explanation**
+PARTITION BY RANGE (sale_date): Specifies that the table is partitioned by the sale_date column.  
+INTERVAL (NUMTODSINTERVAL(30, 'DAY')): Specifies that each partition will cover a 30-day interval.   
+PARTITION p_initial VALUES LESS THAN (TO_DATE('01-JAN-2024','DD-MON-YYYY')): Defines an initial partition for dates before January 1, 2024. This is necessary to initialize the interval partitioning scheme.
+With this setup, Oracle automatically creates new partitions as needed when data is inserted, ensuring that partitions are created for each 30-day interval. You don't need to manually manage the partitions for each specific 30-day period.  
