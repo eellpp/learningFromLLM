@@ -58,7 +58,39 @@ INTERVAL (NUMTODSINTERVAL(30, 'DAY'))
 
 ```
 **Explanation**
-PARTITION BY RANGE (sale_date): Specifies that the table is partitioned by the sale_date column.  
-INTERVAL (NUMTODSINTERVAL(30, 'DAY')): Specifies that each partition will cover a 30-day interval.   
+PARTITION BY RANGE (sale_date): Specifies that the table is partitioned by the sale_date column.   
+
+INTERVAL (NUMTODSINTERVAL(30, 'DAY')): Specifies that each partition will cover a 30-day interval.     
+
 PARTITION p_initial VALUES LESS THAN (TO_DATE('01-JAN-2024','DD-MON-YYYY')): Defines an initial partition for dates before January 1, 2024. This is necessary to initialize the interval partitioning scheme.
+
 With this setup, Oracle automatically creates new partitions as needed when data is inserted, ensuring that partitions are created for each 30-day interval. You don't need to manually manage the partitions for each specific 30-day period.  
+
+### Rolling Partition Management
+If you need to manage a rolling 30-day window, you may need to periodically drop old partitions. This can be done with a scheduled job that runs at regular intervals (e.g., daily) to drop partitions older than the desired retention period.
+
+Here’s an example of how to drop partitions older than 30 days:
+
+```bash
+DECLARE
+  v_partition_name VARCHAR2(50);
+BEGIN
+  FOR rec IN (SELECT partition_name
+              FROM user_tab_partitions
+              WHERE table_name = 'SALES'
+              AND high_value < TO_DATE(SYSDATE - 30, 'DD-MON-YYYY')) LOOP
+    EXECUTE IMMEDIATE 'ALTER TABLE sales DROP PARTITION ' || rec.partition_name;
+  END LOOP;
+END;
+/
+
+```
+
+**Explanation**
+This PL/SQL block iterates through the partitions of the sales table. 
+
+It checks for partitions where the high_value is older than 30 days from the current date.
+
+It drops those partitions using the ALTER TABLE statement.
+
+By using interval partitioning along with a scheduled job to manage old partitions, you can effectively maintain a rolling 30-day interval without hardcoding partition definitions in the table creation statement.
