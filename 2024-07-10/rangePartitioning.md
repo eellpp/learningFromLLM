@@ -93,3 +93,25 @@ It checks for partitions where the high_value is older than 30 days from the cur
 It drops those partitions using the ALTER TABLE statement.
 
 By using interval partitioning along with a scheduled job to manage old partitions, you can effectively maintain a rolling 30-day interval without hardcoding partition definitions in the table creation statement.
+
+
+### how to view the existing range partitions in a oracle table
+To view the existing range partitions for an Oracle table, you can query the data dictionary views such as ALL_TAB_PARTITIONS or USER_TAB_PARTITIONS. These views provide information about the partitions of tables.
+
+```bash
+SELECT table_owner, table_name, partition_name, high_value, high_value_length, partition_position, tablespace_name
+FROM all_tab_partitions
+WHERE table_name = 'YOUR_TABLE_NAME'
+AND table_owner = 'TABLE_OWNER'
+ORDER BY partition_position;
+```
+### Explanation
+`partition_name`: The name of the partition.  
+
+`high_value`: The upper bound of the range for the partition. This is stored as a long string, and may need to be interpreted.
+
+`high_value_length`: The length of the high_value column.
+
+`partition_position`: The position of the partition in the table.
+
+`tablespace_name`: The tablespace in which the partition is stored.
