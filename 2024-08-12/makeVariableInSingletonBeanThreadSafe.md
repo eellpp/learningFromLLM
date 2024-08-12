@@ -48,6 +48,11 @@ To make the check-and-set operation thread-safe, you can use `synchronized` meth
    ```
    - The `synchronized` keyword ensures that only one thread can execute these methods at a time, which makes the check-and-set operation thread-safe.
 
+Effect of Synchronised,   
+1) it is not possible for two invocations of synchronized methods on the same object to interleave. When one thread is executing a synchronized method for an object, all other threads that invoke synchronized methods for the same object block (suspend execution) until the first thread is done with the object.
+2) Second, when a synchronized method exits, it automatically establishes a happens-before relationship with any subsequent invocation of a synchronized method for the same object. This guarantees that changes to the state of the object are visible to all threads
+
+
 #### 2. **Using `AtomicBoolean`:**
    ```java
    @Component
