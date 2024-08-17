@@ -10,3 +10,8 @@ Here’s a comparative table outlining when to use and when not to use PyScript,
 | **React**              | - Large-scale web apps with dynamic UIs.<br>- When component-based architecture is important.<br>- Projects needing SSR (with Next.js) or integration with a vast ecosystem.<br>- Mature tooling and community support needed. | - Small, simple applications where React's complexity is overkill.<br>- Projects requiring high performance with minimal overhead.<br>- For pure server-side applications where React isn't adding value. |
 
 Each framework/library has its niche, so the decision depends on your project's scope, performance needs, and preferred development ecosystem.
+
+References:  
+
+[PyScript: An open source platform for Python in the browser | Hacker News](https://news.ycombinator.com/item?id=41263843)
+
